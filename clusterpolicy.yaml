@@ -1,0 +1,23 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: set-revision-history-limit
+spec:
+  background: true
+  rules:
+  - match:
+      any:
+      - resources:
+          kinds:
+          - Deployment
+          names:
+          - nginx-deployment
+          namespaces:
+          - test
+    mutate:
+      patchStrategicMerge:
+        spec:
+          replicas: 1
+          revisionHistoryLimit: 3
+    name: set-revision-history-limit
+  validationFailureAction: Audit
